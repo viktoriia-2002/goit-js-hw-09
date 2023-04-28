@@ -12,6 +12,7 @@ const secondsEl = document.querySelector('[data-seconds]');
 let timerId;
 
 startBtn.setAttribute('disabled', true);
+startBtn.addEventListener('click', onStartBtnClick);
 
 const options = {
   enableTime: true,
@@ -19,8 +20,7 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    const selectedDate = selectedDates[0];
-    if (selectedDate && selectedDate.getTime() <= new Date().getTime()) {
+    if (selectedDates[0].getTime() <= new Date().getTime()) {
       startBtn.setAttribute('disabled', true);
       Notiflix.Notify.failure('Please choose a date in the future');
     } else {
@@ -29,33 +29,30 @@ const options = {
   },
 };
 
+function onStartBtnClick(event) {
+  timerId = setInterval(() => {
+    const ms = datePicker.selectedDates[0].getTime() - Date.now();
+    if (ms <= 1000) {
+      clearInterval(timerId);
+      Notiflix.Notify.success('Time is up!');
+    }
+    updateTimer(ms);
+  }, 1000);
+}
+
 const datePicker = flatpickr(inputEL, options);
 datePicker.selectedDates[0].getTime();
 
-function addLeadingZero(value) {
-  return value.toString().padStart(2, '0');
-}
-
-function updateTimer(selectedDates) {
-  const ms = selectedDates[0].getTime() - Date.now();
+function updateTimer(ms) {
+  // const ms = selectedDates[0].getTime() - Date.now();
   const time = convertMs(ms);
   daysEl.textContent = addLeadingZero(time.days);
   hoursEl.textContent = addLeadingZero(time.hours);
   minutesEl.textContent = addLeadingZero(time.minutes);
   secondsEl.textContent = addLeadingZero(time.seconds);
-
-  if (ms <= 0) {
-    clearInterval(timerId);
-    Notiflix.Notify.success('Time is up!');
-  }
 }
 
-timerId = setInterval(() => {
-  updateTimer(datePicker.selectedDates);
-}, 1000);
-
 timerId = setInterval(updateTimer, 1000);
-
 
 function convertMs(ms) {
   const second = 1000;
@@ -69,6 +66,10 @@ function convertMs(ms) {
   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
   return { days, hours, minutes, seconds };
+}
+
+function addLeadingZero(value) {
+  return value.toString().padStart(2, '0');
 }
 
 console.log(convertMs(2000));
