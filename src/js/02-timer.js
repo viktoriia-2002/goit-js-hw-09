@@ -42,14 +42,14 @@ function onStartBtnClick(event) {
 
 const datePicker = flatpickr(inputEL, options);
 datePicker.selectedDates[0].getTime();
+console.log(datePicker.selectedDates[0].getTime());
 
 function updateTimer(ms) {
-  // const ms = selectedDates[0].getTime() - Date.now();
   const time = convertMs(ms);
-  daysEl.textContent = addLeadingZero(time.days);
-  hoursEl.textContent = addLeadingZero(time.hours);
-  minutesEl.textContent = addLeadingZero(time.minutes);
-  secondsEl.textContent = addLeadingZero(time.seconds);
+  daysEl.textContent = time.days;
+  hoursEl.textContent = time.hours;
+  minutesEl.textContent = time.minutes;
+  secondsEl.textContent = time.seconds;
 }
 
 timerId = setInterval(updateTimer, 1000);
@@ -64,7 +64,6 @@ function convertMs(ms) {
   const hours = Math.floor((ms % day) / hour);
   const minutes = Math.floor(((ms % day) % hour) / minute);
   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
-
   return { days, hours, minutes, seconds };
 }
 
