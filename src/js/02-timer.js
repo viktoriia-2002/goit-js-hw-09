@@ -25,16 +25,37 @@ const options = {
       Notiflix.Notify.failure('Please choose a date in the future');
     } else {
       startBtn.removeAttribute('disabled');
-      const timer = new ReverseTimer({ daysEl, hoursEl, minutesEl, secondsEl });
     }
   },
 };
 
-flatpickr(inputEL, options);
+const datePicker = flatpickr(inputEL, options);
+datePicker.selectedDates[0].getTime();
 
 function addLeadingZero(value) {
   return value.toString().padStart(2, '0');
 }
+
+function updateTimer(selectedDates) {
+  const ms = selectedDates[0].getTime() - Date.now();
+  const time = convertMs(ms);
+  daysEl.textContent = addLeadingZero(time.days);
+  hoursEl.textContent = addLeadingZero(time.hours);
+  minutesEl.textContent = addLeadingZero(time.minutes);
+  secondsEl.textContent = addLeadingZero(time.seconds);
+
+  if (ms <= 0) {
+    clearInterval(timerId);
+    Notiflix.Notify.success('Time is up!');
+  }
+}
+
+timerId = setInterval(() => {
+  updateTimer(datePicker.selectedDates);
+}, 1000);
+
+timerId = setInterval(updateTimer, 1000);
+
 
 function convertMs(ms) {
   const second = 1000;
@@ -45,5 +66,11 @@ function convertMs(ms) {
   const days = Math.floor(ms / day);
   const hours = Math.floor((ms % day) / hour);
   const minutes = Math.floor(((ms % day) % hour) / minute);
-  const seconds = Math.floor(ms % day);
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+
+  return { days, hours, minutes, seconds };
 }
+
+console.log(convertMs(2000));
+console.log(convertMs(140000));
+console.log(convertMs(24140000));
