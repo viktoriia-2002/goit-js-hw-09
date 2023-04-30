@@ -29,17 +29,6 @@ const options = {
   },
 };
 
-function onStartBtnClick(event) {
-  timerId = setInterval(() => {
-    const ms = datePicker.selectedDates[0].getTime() - Date.now();
-    if (ms <= 1000) {
-      clearInterval(timerId);
-      Notiflix.Notify.success('Time is up!');
-    }
-    updateTimer(ms);
-  }, 1000);
-}
-
 const datePicker = flatpickr(inputEL, options);
 datePicker.selectedDates[0].getTime();
 console.log(datePicker.selectedDates[0].getTime());
@@ -52,7 +41,16 @@ function updateTimer(ms) {
   secondsEl.textContent = time.seconds;
 }
 
-timerId = setInterval(updateTimer, 1000);
+function onStartBtnClick(event) {
+  timerId = setInterval(() => {
+    const ms = datePicker.selectedDates[0].getTime() - Date.now();
+    if (ms <= 1000) {
+      clearInterval(timerId);
+      Notiflix.Notify.success('Time is up!');
+    }
+    updateTimer(ms);
+  }, 1000);
+}
 
 function convertMs(ms) {
   const second = 1000;

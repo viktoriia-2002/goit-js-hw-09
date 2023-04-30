@@ -40,3 +40,28 @@ function createPromise(position, delay) {
     }, delay);
   });
 }
+
+
+
+// refs.formEl.addEventListener('submit', event => {
+//   event.preventDefault();
+
+//   const delay = parseInt(refs.inputElDelay.value);
+//   refs.inputElDelay.value = delay;
+//   const amount = parseInt(refs.inputElAmount.value);
+//   const step = parseInt(refs.inputElNumber.value);
+
+//   const promises = Array.from({ length: amount }, (_, i) => createPromise(i + 1, delay + i * step));
+
+//   Promise.all(promises)
+//     .then(results => {
+//       results.forEach(({ position, delay }) => {
+//         Notiflix.Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
+//       });
+//     })
+//     .catch(results => {
+//       results.forEach(({ position, delay }) => {
+//         Notiflix.Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
+//       });
+//     });
+// });
